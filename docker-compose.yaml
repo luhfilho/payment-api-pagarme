@@ -1,0 +1,64 @@
+version: "3.1"
+
+services:
+  ## custom image
+  payment-api:
+    build: .
+    ports:
+      - 1580:1580
+    volumes:
+      - ./src/:/app/
+    entrypoint: "npm run local"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_DB: "0"
+      MONGO_HOST: "mongodb"
+      MONGODB_PORT: "27017"
+      MONGO_DB: "payments"
+  #mysql image
+  #payment-api_mysql:
+  #  image: mysql
+  #  volumes:
+  #    - payment-api-mysql-data:/var/lib/mysql
+  #  command: --default-authentication-plugin=mysql_native_password --innodb-use-native-aio=0
+  #  restart: always
+  #  ports:
+  #    - 1506:3306
+  #  environment:
+  #    MYSQL_ROOT_PASSWORD: root
+  #    MYSQL_DATABASE: db
+  #mongodb image
+  payment-api_mongodb:
+    image: mongo
+    ports:
+        - 1517:27017
+    volumes:
+        - payment-api-mongo-data:/data/db
+  #redis image
+  payment-api_redis:
+    image: redis
+    ports:
+        - 1579:6379
+    volumes:
+        - payment-api-redis-data:/var/lib/redis
+  #elastic search image
+  #payment-api_elasticsearch:
+  #  image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+  #  ulimits:
+  #    memlock:
+  #      soft: -1
+  #      hard: -1
+  #  ports:
+  #      - 15200:9200
+  #      - 15300:9300
+  #  volumes:
+  #      - payment-api-elasticsearch-data:/usr/share/elasticsearch/data
+  #  environment:
+  #    "discovery.type" : "single-node"
+
+volumes:
+  #payment-api-mysql-data:
+  payment-api-mongo-data:
+  payment-api-redis-data:
+  #payment-api-elasticsearch-data:
